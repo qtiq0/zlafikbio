@@ -25,11 +25,6 @@
             --blur-strength: 20px;
             --blur-light: 15px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --snow-color: rgba(255, 255, 255, 0.9);
-            --snow-color-light: rgba(255, 255, 255, 0.6);
-            --snow-color-dim: rgba(255, 255, 255, 0.3);
-            --particle-color: rgba(108, 99, 255, 0.7);
-            --particle-color-secondary: rgba(255, 107, 107, 0.7);
         }
 
         * {
@@ -53,102 +48,51 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            background: radial-gradient(ellipse at center, #0a0a15 0%, #000000 70%);
         }
 
-        /* === ФОН С СНЕГОМ И ЧАСТИЦАМИ === */
+        /* === ФОН С ПАДАЮЩИМИ СНЕЖИНКАМИ === */
         #snow-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
+            z-index: -3;
             pointer-events: none;
             overflow: hidden;
         }
 
+        /* СНЕЖИНКИ */
         .snowflake {
             position: absolute;
-            background: var(--snow-color);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             pointer-events: none;
             filter: blur(0.5px);
         }
 
+        /* СВЕТЛЫЕ СНЕЖИНКИ */
         .snowflake.light {
-            background: var(--snow-color-light);
-            filter: blur(1px);
-        }
-
-        .snowflake.dim {
-            background: var(--snow-color-dim);
-            filter: blur(0.3px);
-        }
-
-        /* === ЧАСТИЦЫ === */
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle.color-1 {
-            background: var(--particle-color);
-            box-shadow: 0 0 15px rgba(108, 99, 255, 0.5);
-        }
-
-        .particle.color-2 {
-            background: var(--particle-color-secondary);
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
-        }
-
-        .particle.color-3 {
             background: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
         }
 
-        .particle.color-4 {
-            background: rgba(76, 201, 240, 0.7);
-            box-shadow: 0 0 15px rgba(76, 201, 240, 0.5);
+        /* СРЕДНИЕ СНЕЖИНКИ */
+        .snowflake.medium {
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
         }
 
-        /* === ПУЛЬСИРУЮЩИЕ ЧАСТИЦЫ === */
-        .pulse-particle {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-            background: radial-gradient(circle, rgba(108, 99, 255, 0.8), transparent 70%);
-            animation: pulseAnimation 4s infinite alternate;
+        /* СЛАБЫЕ СНЕЖИНКИ */
+        .snowflake.dim {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
         }
 
-        @keyframes pulseAnimation {
+        /* АНИМАЦИЯ ПАДЕНИЯ СНЕЖИНОК */
+        @keyframes snowfall {
             0% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-            100% {
-                transform: scale(1.3);
-                opacity: 0.7;
-            }
-        }
-
-        /* === ЛИНИИ СОЕДИНЕНИЙ МЕЖДУ ЧАСТИЦАМИ === */
-        .particle-line {
-            position: absolute;
-            background: linear-gradient(90deg, rgba(108, 99, 255, 0.4), rgba(255, 107, 107, 0.4));
-            transform-origin: left center;
-            pointer-events: none;
-            z-index: -2;
-            border-radius: 1px;
-        }
-
-        /* === АНИМАЦИИ СНЕГА === */
-        @keyframes snowFallFast {
-            0% {
-                transform: translateY(-100px) translateX(0) rotate(0deg);
+                transform: translateY(-100px) rotate(0deg);
                 opacity: 0;
             }
             10% {
@@ -158,101 +102,12 @@
                 opacity: 1;
             }
             100% {
-                transform: translateY(calc(100vh + 100px)) translateX(100px) rotate(360deg);
+                transform: translateY(100vh) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        @keyframes snowFallMedium {
-            0% {
-                transform: translateY(-100px) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(calc(100vh + 100px)) translateX(50px) rotate(180deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes snowFallSlow {
-            0% {
-                transform: translateY(-100px) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(calc(100vh + 100px)) translateX(-50px) rotate(90deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes snowFallVerySlow {
-            0% {
-                transform: translateY(-100px) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(calc(100vh + 100px)) translateX(-100px);
-                opacity: 0;
-            }
-        }
-
-        @keyframes floatParticle {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
-            }
-            25% {
-                transform: translate(10px, -10px) scale(1.1);
-            }
-            50% {
-                transform: translate(-5px, 5px) scale(0.9);
-            }
-            75% {
-                transform: translate(-10px, -5px) scale(1.05);
-            }
-        }
-
-        @keyframes spinParticle {
-            0% {
-                transform: rotate(0deg) scale(1);
-            }
-            50% {
-                transform: rotate(180deg) scale(1.2);
-            }
-            100% {
-                transform: rotate(360deg) scale(1);
-            }
-        }
-
-        @keyframes glowParticle {
-            0%, 100% {
-                box-shadow: 0 0 10px currentColor;
-                filter: brightness(1);
-            }
-            50% {
-                box-shadow: 0 0 25px currentColor;
-                filter: brightness(1.5);
-            }
-        }
-
-        /* === БЛЮР ЭФФЕКТ НА ФОНЕ === */
+        /* БЛЮР ЭФФЕКТ НА ФОНЕ */
         .blur-layer {
             position: fixed;
             top: 0;
@@ -261,13 +116,12 @@
             height: 100%;
             backdrop-filter: blur(var(--blur-strength));
             -webkit-backdrop-filter: blur(var(--blur-strength));
-            background: radial-gradient(circle at 20% 30%, rgba(10, 10, 30, 0.4) 0%, transparent 50%),
-                       radial-gradient(circle at 80% 70%, rgba(30, 10, 30, 0.3) 0%, transparent 50%);
+            background: rgba(0, 0, 0, 0.6);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* === КОНТЕЙНЕР === */
+        /* КОНТЕЙНЕР */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -276,7 +130,7 @@
             z-index: 1;
         }
 
-        /* === НАВИГАЦИЯ С БЛЮРОМ === */
+        /* НАВИГАЦИЯ С БЛЮРОМ */
         .top-nav {
             position: fixed;
             top: 2rem;
@@ -332,11 +186,11 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--particle-color), var(--particle-color-secondary));
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 2px;
         }
 
-        /* === ЗАГОЛОВОК === */
+        /* ЗАГОЛОВОК */
         .header {
             padding: 14rem 0 8rem 0;
             text-align: center;
@@ -361,7 +215,6 @@
             position: relative;
             display: inline-block;
             line-height: 1;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
         }
 
         .main-title::after {
@@ -370,7 +223,6 @@
             right: -30px;
             color: rgba(255, 255, 255, 0.7);
             animation: blink 1s infinite;
-            text-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
         }
 
         @keyframes blink {
@@ -389,19 +241,27 @@
             background: rgba(20, 20, 20, 0.4);
             display: inline-block;
             backdrop-filter: blur(15px);
-            animation: glowPulse 3s infinite alternate;
+            margin-left: auto;
+            margin-right: auto;
+            transform: translateX(30%); /* Сдвигаем правее */
+            position: relative;
         }
 
-        @keyframes glowPulse {
-            0% {
-                box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
-            }
-            100% {
-                box-shadow: 0 0 30px rgba(108, 99, 255, 0.2);
+        @media (max-width: 768px) {
+            .tagline {
+                transform: translateX(15%); /* Меньший сдвиг на мобильных */
             }
         }
 
-        /* === ОСНОВНОЙ КОНТЕНТ === */
+        @media (max-width: 480px) {
+            .tagline {
+                transform: translateX(10%); /* Ещё меньше на маленьких экранах */
+                font-size: 1rem;
+                padding: 0.8rem 1.5rem;
+            }
+        }
+
+        /* ОСНОВНОЙ КОНТЕНТ */
         .tab-content {
             padding: 2rem 0 10rem 0;
         }
@@ -420,7 +280,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* === КАРТОЧКИ С БЛЮРОМ === */
+        /* КАРТОЧКИ С БЛЮРОМ */
         .card {
             background: rgba(20, 20, 20, 0.4);
             border-radius: 24px;
@@ -432,16 +292,6 @@
             overflow: hidden;
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            animation: cardFloat 6s infinite alternate ease-in-out;
-        }
-
-        @keyframes cardFloat {
-            0% {
-                transform: translateY(0px);
-            }
-            100% {
-                transform: translateY(-5px);
-            }
         }
 
         .card::before {
@@ -451,7 +301,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(108, 99, 255, 0.03), rgba(255, 107, 107, 0.03), transparent);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
             pointer-events: none;
             z-index: 0;
             border-radius: 24px;
@@ -459,11 +309,9 @@
 
         .card:hover {
             border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
-                        0 0 40px rgba(108, 99, 255, 0.1);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
             transform: translateY(-8px);
             backdrop-filter: blur(30px);
-            animation: none;
         }
 
         .card h2 {
@@ -485,23 +333,11 @@
             left: 0;
             width: 120px;
             height: 3px;
-            background: linear-gradient(90deg, var(--particle-color), var(--particle-color-secondary));
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
             border-radius: 3px;
-            animation: lineGlow 2s infinite alternate;
         }
 
-        @keyframes lineGlow {
-            0% {
-                opacity: 0.7;
-                width: 120px;
-            }
-            100% {
-                opacity: 1;
-                width: 150px;
-            }
-        }
-
-        /* === ИНФО СЕТКА === */
+        /* ИНФО СЕТКА */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
@@ -516,27 +352,13 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: var(--transition);
             backdrop-filter: blur(15px);
-            animation: itemFloat 4s infinite alternate ease-in-out;
-            animation-delay: calc(var(--item-index) * 0.2s);
-        }
-
-        @keyframes itemFloat {
-            0% {
-                transform: translateY(0);
-            }
-            100% {
-                transform: translateY(-3px);
-            }
         }
 
         .info-item:hover {
-            border-color: rgba(108, 99, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
             transform: translateY(-5px);
-            background: rgba(108, 99, 255, 0.05);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
-                        0 0 20px rgba(108, 99, 255, 0.1);
-            animation: none;
         }
 
         .label {
@@ -557,7 +379,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* === ПРИНЦИПЫ === */
+        /* ПРИНЦИПЫ */
         .principles-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
@@ -572,49 +394,19 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: var(--transition);
             backdrop-filter: blur(15px);
-            animation: principleFloat 5s infinite alternate ease-in-out;
-            animation-delay: calc(var(--item-index) * 0.3s);
-        }
-
-        @keyframes principleFloat {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            100% {
-                transform: translateY(-4px) rotate(0.5deg);
-            }
         }
 
         .principle-item:hover {
-            border-color: rgba(255, 107, 107, 0.3);
-            transform: translateY(-5px) rotate(0deg);
-            background: rgba(255, 107, 107, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
-                        0 0 20px rgba(255, 107, 107, 0.1);
-            animation: none;
         }
 
         .principle-item i {
             font-size: 1.8rem;
             color: rgba(255, 255, 255, 0.7);
             margin-bottom: 1.5rem;
-            transition: var(--transition);
-            animation: iconGlow 3s infinite alternate;
-        }
-
-        @keyframes iconGlow {
-            0% {
-                filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
-            }
-            100% {
-                filter: drop-shadow(0 0 10px rgba(108, 99, 255, 0.5));
-            }
-        }
-
-        .principle-item:hover i {
-            color: var(--particle-color);
-            animation: spinParticle 1s ease;
         }
 
         .principle-text {
@@ -631,7 +423,7 @@
             opacity: 0.8;
         }
 
-        /* === ВКЛАДКА ПРОЕКТОВ === */
+        /* ВКЛАДКА ПРОЕКТОВ */
         .projects-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -648,16 +440,6 @@
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(25px);
-            animation: projectFloat 8s infinite alternate ease-in-out;
-        }
-
-        @keyframes projectFloat {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            100% {
-                transform: translateY(-6px) rotate(0.2deg);
-            }
         }
 
         .project-card::before {
@@ -667,29 +449,17 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, var(--particle-color), var(--particle-color-secondary));
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.4), transparent);
             z-index: 1;
-            animation: lineFlow 3s infinite linear;
-        }
-
-        @keyframes lineFlow {
-            0% {
-                background-position: 0% 0%;
-            }
-            100% {
-                background-position: 200% 0%;
-            }
         }
 
         .project-card:hover {
             transform: translateY(-10px) scale(1.01);
-            border-color: rgba(108, 99, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.15);
             box-shadow: 
                 0 30px 70px rgba(0, 0, 0, 0.9),
-                0 0 50px rgba(108, 99, 255, 0.2),
-                0 0 80px rgba(255, 107, 107, 0.1);
+                0 0 40px rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(30px);
-            animation: none;
         }
 
         .project-card h3 {
@@ -725,27 +495,12 @@
             font-family: 'JetBrains Mono', monospace;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
-            animation: tagPulse 2s infinite alternate;
-            animation-delay: calc(var(--tag-index) * 0.1s);
-        }
-
-        @keyframes tagPulse {
-            0% {
-                transform: scale(1);
-                background: rgba(255, 255, 255, 0.07);
-            }
-            100% {
-                transform: scale(1.05);
-                background: rgba(108, 99, 255, 0.1);
-            }
         }
 
         .tech-tag:hover {
-            background: rgba(108, 99, 255, 0.15);
-            transform: translateY(-2px) scale(1.1);
-            border-color: rgba(108, 99, 255, 0.3);
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.2);
-            animation: none;
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .project-features {
@@ -759,34 +514,12 @@
             margin-bottom: 1.2rem;
             color: var(--text-accent);
             font-size: 1.2rem;
-            animation: featureSlideIn 0.5s ease-out forwards;
-            opacity: 0;
-            transform: translateX(-10px);
-            animation-delay: calc(var(--feature-index) * 0.1s);
-        }
-
-        @keyframes featureSlideIn {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
         }
 
         .feature-item i {
-            color: var(--particle-color);
+            color: rgba(255, 255, 255, 0.6);
             min-width: 24px;
             font-size: 1rem;
-            transition: var(--transition);
-            animation: iconPulse 2s infinite alternate;
-        }
-
-        @keyframes iconPulse {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.2);
-            }
         }
 
         .project-links {
@@ -812,28 +545,16 @@
             text-align: center;
             font-size: 1.1rem;
             backdrop-filter: blur(15px);
-            animation: buttonGlow 3s infinite alternate;
-        }
-
-        @keyframes buttonGlow {
-            0% {
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            }
-            100% {
-                box-shadow: 0 5px 25px rgba(108, 99, 255, 0.2);
-            }
         }
 
         .project-link:hover {
-            background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(255, 107, 107, 0.2));
+            background: rgba(255, 255, 255, 0.12);
             transform: translateY(-4px);
-            border-color: rgba(108, 99, 255, 0.3);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6),
-                        0 0 30px rgba(108, 99, 255, 0.3);
-            animation: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
         }
 
-        /* === ВКЛАДКА КОНТАКТОВ === */
+        /* ВКЛАДКА КОНТАКТОВ */
         .contacts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
@@ -849,26 +570,13 @@
             transition: var(--transition);
             text-align: center;
             backdrop-filter: blur(25px);
-            animation: contactFloat 7s infinite alternate ease-in-out;
-        }
-
-        @keyframes contactFloat {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            100% {
-                transform: translateY(-7px) rotate(0.3deg);
-            }
         }
 
         .contact-card:hover {
-            transform: translateY(-8px) rotate(0deg);
-            border-color: rgba(108, 99, 255, 0.3);
-            background: linear-gradient(135deg, rgba(25, 25, 25, 0.6), rgba(25, 25, 25, 0.8));
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(25, 25, 25, 0.5);
             backdrop-filter: blur(30px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7),
-                        0 0 40px rgba(108, 99, 255, 0.2);
-            animation: none;
         }
 
         .contact-icon {
@@ -884,24 +592,12 @@
             color: rgba(255, 255, 255, 0.9);
             border: 2px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
-            animation: iconFloat 4s infinite alternate ease-in-out;
-        }
-
-        @keyframes iconFloat {
-            0% {
-                transform: translateY(0) scale(1);
-            }
-            100% {
-                transform: translateY(-5px) scale(1.05);
-            }
         }
 
         .contact-card:hover .contact-icon {
-            background: linear-gradient(135deg, var(--particle-color), var(--particle-color-secondary));
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1) rotate(360deg);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
         }
 
         .contact-title {
@@ -937,28 +633,16 @@
             transition: var(--transition);
             width: 100%;
             font-size: 1.1rem;
-            animation: linkPulse 4s infinite alternate;
-        }
-
-        @keyframes linkPulse {
-            0% {
-                background: rgba(255, 255, 255, 0.07);
-            }
-            100% {
-                background: rgba(108, 99, 255, 0.1);
-            }
         }
 
         .contact-link:hover {
-            background: linear-gradient(135deg, rgba(108, 99, 255, 0.2), rgba(255, 107, 107, 0.2));
+            background: rgba(255, 255, 255, 0.12);
             transform: translateY(-3px);
-            border-color: rgba(108, 99, 255, 0.3);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
-                        0 0 25px rgba(108, 99, 255, 0.2);
-            animation: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
 
-        /* === ФУТЕР === */
+        /* ФУТЕР */
         .footer {
             text-align: center;
             padding: 5rem 0;
@@ -968,18 +652,6 @@
             margin-top: 8rem;
             backdrop-filter: blur(25px);
             background: rgba(10, 10, 10, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--particle-color), var(--particle-color-secondary), transparent);
         }
 
         .footer p {
@@ -1002,33 +674,13 @@
             transition: var(--transition);
             font-weight: 500;
             font-size: 1.1rem;
-            position: relative;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-        }
-
-        .footer-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--particle-color), var(--particle-color-secondary));
-            transition: var(--transition);
         }
 
         .footer-link:hover {
             color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
         }
 
-        .footer-link:hover::after {
-            width: 100%;
-        }
-
-        /* === АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНА === */
+        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНА */
         @media (max-width: 768px) {
             .container {
                 padding: 0 1.5rem;
@@ -1101,6 +753,11 @@
                 align-items: center;
             }
             
+            /* Уменьшаем количество снежинок на мобильных */
+            .snowflake {
+                transform: scale(0.8);
+            }
+            
             /* Уменьшаем блюр на мобильных для производительности */
             .card, .project-card, .contact-card, .nav-button.active {
                 backdrop-filter: blur(15px);
@@ -1110,16 +767,6 @@
             .blur-layer {
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
-            }
-            
-            /* Уменьшаем количество анимаций на мобильных */
-            .card, .project-card, .contact-card, .info-item, .principle-item {
-                animation-duration: 8s;
-            }
-            
-            /* Уменьшаем количество снежинок на мобильных */
-            #snow-bg .snowflake {
-                transform: scale(0.7);
             }
         }
 
@@ -1159,17 +806,13 @@
                 font-size: 1.1rem;
             }
             
-            /* Ещё меньше анимаций на очень маленьких экранах */
-            .card, .project-card, .contact-card {
-                animation: none;
-            }
-            
-            #snow-bg .snowflake {
-                transform: scale(0.5);
+            /* Ещё меньше снежинок на очень маленьких экранах */
+            .snowflake {
+                transform: scale(0.7);
             }
         }
 
-        /* === ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ === */
+        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ */
         @media (max-width: 768px) {
             .card:hover, .project-card:hover, .contact-card:hover {
                 transform: translateY(-5px);
@@ -1181,30 +824,18 @@
             
             /* Убираем сложные тени на мобильных для производительности */
             .card:hover, .project-card:hover {
-                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8),
-                            0 0 20px rgba(108, 99, 255, 0.1);
-            }
-            
-            /* Уменьшаем количество частиц на мобильных */
-            .particle, .pulse-particle {
-                transform: scale(0.7);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
             }
         }
 
-        /* === ПРЕДОТВРАЩЕНИЕ ЗУМА НА МОБИЛЬНЫХ === */
+        /* ПРЕДОТВРАЩЕНИЕ ЗУМА НА МОБИЛЬНЫХ */
         input, textarea, button, select, a {
             font-size: 16px; /* Предотвращает зум в iOS Safari */
-        }
-
-        /* === ЭФФЕКТ ПАРАЛЛАКСА ДЛЯ ЧАСТИЦ === */
-        .parallax-particle {
-            transform-style: preserve-3d;
-            will-change: transform;
         }
     </style>
 </head>
 <body>
-    <!-- ФОН С СНЕГОМ И ЧАСТИЦАМИ -->
+    <!-- ФОН С ПАДАЮЩИМИ СНЕЖИНКАМИ -->
     <div id="snow-bg"></div>
     <div class="blur-layer"></div>
 
@@ -1243,19 +874,19 @@
                 <article class="card">
                     <h2><i class="fas fa-user-secret"></i> Профиль</h2>
                     <div class="info-grid">
-                        <div class="info-item" style="--item-index: 0;">
+                        <div class="info-item">
                             <div class="label"><i class="fas fa-id-badge"></i> ID</div>
                             <div class="value">zlafik / Рома</div>
                         </div>
-                        <div class="info-item" style="--item-index: 1;">
+                        <div class="info-item">
                             <div class="label"><i class="fas fa-brain"></i> Специализация</div>
                             <div class="value">Backend • Automation</div>
                         </div>
-                        <div class="info-item" style="--item-index: 2;">
+                        <div class="info-item">
                             <div class="label"><i class="fas fa-calendar-code"></i> Опыт</div>
                             <div class="value">С 2024</div>
                         </div>
-                        <div class="info-item" style="--item-index: 3;">
+                        <div class="info-item">
                             <div class="label"><i class="fas fa-code-branch"></i> Направление</div>
                             <div class="value">Discord Bots • API</div>
                         </div>
@@ -1266,22 +897,22 @@
                 <article class="card">
                     <h2><i class="fas fa-dna"></i> Принципы</h2>
                     <div class="principles-grid">
-                        <div class="principle-item" style="--item-index: 0;">
+                        <div class="principle-item">
                             <i class="fas fa-bullseye"></i>
                             <div class="principle-text">Фокус на код</div>
                             <div class="principle-note">Минимум диалогов, максимум результата</div>
                         </div>
-                        <div class="principle-item" style="--item-index: 1;">
+                        <div class="principle-item">
                             <i class="fas fa-ban"></i>
                             <div class="principle-text">Игнорирование провокаций</div>
                             <div class="principle-note">Троллинг и конфликты — не мой профиль</div>
                         </div>
-                        <div class="principle-item" style="--item-index: 2;">
+                        <div class="principle-item">
                             <i class="fas fa-shield-alt"></i>
                             <div class="principle-text">Самостоятельность</div>
                             <div class="principle-note">Работаю исключительно один</div>
                         </div>
-                        <div class="principle-item" style="--item-index: 3;">
+                        <div class="principle-item">
                             <i class="fas fa-comment-slash"></i>
                             <div class="principle-text">ЧС как инструмент</div>
                             <div class="principle-note">Непрофессионализм = моментальный игнор</div>
@@ -1302,24 +933,24 @@
                             </div>
                             
                             <div class="project-tech">
-                                <span class="tech-tag" style="--tag-index: 0;">Python</span>
-                                <span class="tech-tag" style="--tag-index: 1;">Discord API</span>
-                                <span class="tech-tag" style="--tag-index: 2;">AsyncIO</span>
-                                <span class="tech-tag" style="--tag-index: 3;">aiohttp</span>
-                                <span class="tech-tag" style="--tag-index: 4;">WebSocket</span>
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Discord API</span>
+                                <span class="tech-tag">AsyncIO</span>
+                                <span class="tech-tag">aiohttp</span>
+                                <span class="tech-tag">WebSocket</span>
                             </div>
                             
                             <div class="project-features">
-                                <div class="feature-item" style="--feature-index: 0;">
+                                <div class="feature-item">
                                     <i class="fas fa-check"></i> Полное копирование структуры сервера
                                 </div>
-                                <div class="feature-item" style="--feature-index: 1;">
+                                <div class="feature-item">
                                     <i class="fas fa-check"></i> Правильный порядок ролей и каналов
                                 </div>
-                                <div class="feature-item" style="--feature-index: 2;">
+                                <div class="feature-item">
                                     <i class="fas fa-check"></i> Стабильная работа с обработкой ошибок
                                 </div>
-                                <div class="feature-item" style="--feature-index: 3;">
+                                <div class="feature-item">
                                     <i class="fas fa-check"></i> Поддержка всех типов каналов
                                 </div>
                             </div>
@@ -1393,7 +1024,7 @@
         <!-- ФУТЕР -->
         <footer class="footer">
             <p>© 2024 <strong>ZLAFIK</strong>. Все права защищены.</p>
-            <p>Чёрно-белый дизайн • Анимации • Снег и частицы</p>
+            <p>Чёрно-белый дизайн • Блюр эффекты • Созвездие частиц</p>
             <div class="footer-links">
                 <a href="#home" class="footer-link">Главная</a>
                 <a href="#projects" class="footer-link">Проекты</a>
@@ -1404,255 +1035,119 @@
     </div>
 
     <script>
-        // СОЗДАНИЕ СНЕГА И ЧАСТИЦ С АНИМАЦИЯМИ
+        // СОЗДАНИЕ ПАДАЮЩИХ СНЕЖИНОК
         document.addEventListener('DOMContentLoaded', function() {
             const snowBg = document.getElementById('snow-bg');
             const snowflakes = [];
-            const particles = [];
-            const pulseParticles = [];
-            const particleLines = [];
+            const snowflakeCount = window.innerWidth < 768 ? 40 : 80; // Меньше снежинок на мобильных
             
-            const snowflakeCount = window.innerWidth < 768 ? 80 : 150;
-            const particleCount = window.innerWidth < 768 ? 20 : 40;
-            const pulseParticleCount = window.innerWidth < 768 ? 10 : 20;
-            const maxConnectionDistance = 200;
-            
-            // === СНЕГ ===
-            for (let i = 0; i < snowflakeCount; i++) {
+            // Создаём снежинки
+            function createSnowflake() {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
                 
-                // Размер и форма снежинки
-                const size = Math.random() * 6 + 2;
+                // Случайный размер
+                const size = Math.random() * 5 + 2;
                 snowflake.style.width = `${size}px`;
                 snowflake.style.height = `${size}px`;
                 
-                // Позиция
+                // Случайная позиция вверху
                 const x = Math.random() * 100;
-                const y = Math.random() * 100;
                 snowflake.style.left = `${x}%`;
-                snowflake.style.top = `${-size}px`;
+                snowflake.style.top = `-10px`;
                 
-                // Яркость
+                // Случайная яркость
                 const brightness = Math.random();
                 if (brightness > 0.7) {
                     snowflake.classList.add('light');
                 } else if (brightness > 0.4) {
-                    // medium по умолчанию
+                    snowflake.classList.add('medium');
                 } else {
                     snowflake.classList.add('dim');
                 }
                 
-                // Случайный оттенок
-                if (Math.random() > 0.9) {
-                    snowflake.style.background = 'rgba(108, 99, 255, 0.8)';
-                } else if (Math.random() > 0.8) {
-                    snowflake.style.background = 'rgba(255, 107, 107, 0.8)';
-                }
+                // Случайная длительность падения
+                const duration = Math.random() * 8 + 10;
+                const delay = Math.random() * 5;
+                const opacity = Math.random() * 0.5 + 0.5;
                 
-                // Анимация падения
-                const fallDuration = Math.random() * 10 + 5;
-                const fallDelay = Math.random() * 5;
-                const fallType = Math.random();
+                snowflake.style.animation = `snowfall ${duration}s linear ${delay}s infinite`;
+                snowflake.style.opacity = opacity;
                 
-                if (fallType > 0.75) {
-                    snowflake.style.animation = `snowFallFast ${fallDuration}s linear ${fallDelay}s infinite`;
-                } else if (fallType > 0.5) {
-                    snowflake.style.animation = `snowFallMedium ${fallDuration * 1.5}s linear ${fallDelay}s infinite`;
-                } else if (fallType > 0.25) {
-                    snowflake.style.animation = `snowFallSlow ${fallDuration * 2}s linear ${fallDelay}s infinite`;
-                } else {
-                    snowflake.style.animation = `snowFallVerySlow ${fallDuration * 3}s linear ${fallDelay}s infinite`;
-                }
+                // Случайное горизонтальное движение
+                const sway = (Math.random() - 0.5) * 50;
+                snowflake.style.setProperty('--sway', `${sway}px`);
                 
-                snowBg.appendChild(snowflake);
-                snowflakes.push({ element: snowflake, x, y: y - 10 });
-            }
-            
-            // === ЦВЕТНЫЕ ЧАСТИЦЫ ===
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                
-                // Размер
-                const size = Math.random() * 8 + 3;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                
-                // Позиция
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                particle.style.left = `${x}%`;
-                particle.style.top = `${y}%`;
-                
-                // Цвет
-                const colorType = Math.random();
-                if (colorType > 0.75) {
-                    particle.classList.add('color-1');
-                } else if (colorType > 0.5) {
-                    particle.classList.add('color-2');
-                } else if (colorType > 0.25) {
-                    particle.classList.add('color-3');
-                } else {
-                    particle.classList.add('color-4');
-                }
-                
-                // Анимация
-                const floatDuration = Math.random() * 10 + 5;
-                const floatDelay = Math.random() * 5;
-                const spinDuration = Math.random() * 15 + 10;
-                
-                particle.style.animation = `
-                    floatParticle ${floatDuration}s ease-in-out ${floatDelay}s infinite,
-                    spinParticle ${spinDuration}s linear ${floatDelay}s infinite,
-                    glowParticle ${floatDuration / 2}s ease-in-out ${floatDelay}s infinite alternate
-                `;
-                
-                // Эффект параллакса
-                particle.classList.add('parallax-particle');
-                particle.style.transform = `translateZ(${Math.random() * 100 - 50}px)`;
-                
-                snowBg.appendChild(particle);
-                particles.push({ element: particle, x, y });
-            }
-            
-            // === ПУЛЬСИРУЮЩИЕ ЧАСТИЦЫ ===
-            for (let i = 0; i < pulseParticleCount; i++) {
-                const pulseParticle = document.createElement('div');
-                pulseParticle.classList.add('pulse-particle');
-                
-                // Размер
-                const size = Math.random() * 100 + 50;
-                pulseParticle.style.width = `${size}px`;
-                pulseParticle.style.height = `${size}px`;
-                
-                // Позиция
-                const x = Math.random() * 100;
-                const y = Math.random() * 100;
-                pulseParticle.style.left = `${x}%`;
-                pulseParticle.style.top = `${y}%`;
-                
-                // Цвет
-                const hue = Math.random() * 360;
-                pulseParticle.style.background = `radial-gradient(circle, hsla(${hue}, 70%, 60%, 0.3), transparent 70%)`;
-                
-                // Задержка анимации
-                const pulseDelay = Math.random() * 5;
-                pulseParticle.style.animationDelay = `${pulseDelay}s`;
-                
-                snowBg.appendChild(pulseParticle);
-                pulseParticles.push(pulseParticle);
-            }
-            
-            // === СОЗДАНИЕ СОЕДИНЕНИЙ МЕЖДУ ЧАСТИЦАМИ ===
-            function createParticleConnections() {
-                // Удаляем старые соединения
-                particleLines.forEach(line => line.remove());
-                particleLines.length = 0;
-                
-                // Создаём новые соединения
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const particleA = particles[i];
-                        const particleB = particles[j];
-                        
-                        // Вычисляем расстояние
-                        const dx = Math.abs(particleA.x - particleB.x) * window.innerWidth / 100;
-                        const dy = Math.abs(particleA.y - particleB.y) * window.innerHeight / 100;
-                        const distance = Math.sqrt(dx * dx + dy * dy);
-                        
-                        // Если частицы достаточно близко и случайное условие
-                        if (distance < maxConnectionDistance && Math.random() > 0.8) {
-                            const line = document.createElement('div');
-                            line.classList.add('particle-line');
-                            
-                            // Вычисляем угол и длину
-                            const angle = Math.atan2(particleB.y - particleA.y, particleB.x - particleA.x) * 180 / Math.PI;
-                            const length = distance;
-                            
-                            // Стили линии
-                            line.style.width = `${length}px`;
-                            line.style.height = `${Math.random() * 1 + 0.5}px`;
-                            line.style.left = `${particleA.x}%`;
-                            line.style.top = `${particleA.y}%`;
-                            line.style.transform = `rotate(${angle}deg)`;
-                            line.style.opacity = Math.random() * 0.3 + 0.1;
-                            
-                            // Анимация мерцания
-                            const pulseDuration = Math.random() * 3 + 2;
-                            line.style.animation = `glowParticle ${pulseDuration}s infinite alternate`;
-                            
-                            snowBg.appendChild(line);
-                            particleLines.push(line);
+                // Добавляем дополнительную анимацию для горизонтального движения
+                const keyframes = `
+                    @keyframes snowfall-${Date.now()} {
+                        0% {
+                            transform: translateY(-100px) translateX(0) rotate(0deg);
+                            opacity: 0;
+                        }
+                        10% {
+                            opacity: ${opacity};
+                        }
+                        90% {
+                            opacity: ${opacity};
+                        }
+                        100% {
+                            transform: translateY(100vh) translateX(var(--sway)) rotate(360deg);
+                            opacity: 0;
                         }
                     }
-                }
+                `;
+                
+                const style = document.createElement('style');
+                style.textContent = keyframes;
+                document.head.appendChild(style);
+                
+                snowflake.style.animationName = `snowfall-${Date.now()}`;
+                
+                snowBg.appendChild(snowflake);
+                snowflakes.push(snowflake);
+                
+                // Удаляем снежинку после завершения анимации
+                setTimeout(() => {
+                    if (snowflake.parentNode) {
+                        snowflake.remove();
+                        const index = snowflakes.indexOf(snowflake);
+                        if (index > -1) {
+                            snowflakes.splice(index, 1);
+                        }
+                    }
+                }, (duration + delay) * 1000);
             }
             
-            // Создаём начальные соединения
-            createParticleConnections();
+            // Создаём начальные снежинки
+            for (let i = 0; i < snowflakeCount; i++) {
+                setTimeout(() => createSnowflake(), Math.random() * 2000);
+            }
             
-            // === ОБРАБОТКА ДВИЖЕНИЯ МЫШИ ===
-            let mouseX = 0;
-            let mouseY = 0;
+            // Продолжаем создавать снежинки
+            setInterval(() => {
+                if (snowflakes.length < snowflakeCount) {
+                    createSnowflake();
+                }
+            }, 300);
             
-            document.addEventListener('mousemove', function(e) {
-                mouseX = e.clientX / window.innerWidth;
-                mouseY = e.clientY / window.innerHeight;
-                
-                // Эффект параллакса для частиц
-                particles.forEach((particle, index) => {
-                    const particleElement = particle.element;
-                    const originalX = particle.x;
-                    const originalY = particle.y;
-                    
-                    // Вычисляем расстояние до курсора
-                    const dx = mouseX - originalX / 100;
-                    const dy = mouseY - originalY / 100;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    // Если частица близко к курсору, усиливаем эффект
-                    if (distance < 0.2) {
-                        const moveX = (Math.random() - 0.5) * 40 * (1 - distance / 0.2);
-                        const moveY = (Math.random() - 0.5) * 40 * (1 - distance / 0.2);
-                        
-                        particleElement.style.transform = `translate(${moveX}px, ${moveY}px) translateZ(${Math.random() * 100 - 50}px)`;
-                        particleElement.style.filter = `brightness(${1.5 - distance / 0.4})`;
-                    } else {
-                        particleElement.style.transform = `translateZ(${Math.random() * 100 - 50}px)`;
-                        particleElement.style.filter = 'brightness(1)';
-                    }
-                });
-                
-                // Эффект для снежинок
-                snowflakes.forEach(snowflake => {
-                    const snowflakeElement = snowflake.element;
-                    const originalX = snowflake.x;
-                    
-                    // Снежинки слегка отклоняются от курсора
-                    const dx = mouseX - originalX / 100;
-                    const moveX = dx * 50;
-                    
-                    snowflakeElement.style.transform = `translateX(${moveX}px)`;
-                });
-                
-                // Обновляем соединения при движении мыши
-                createParticleConnections();
-            });
-            
-            // === ОБНОВЛЕНИЕ ПРИ ИЗМЕНЕНИИ РАЗМЕРА ОКНА ===
+            // Адаптация количества снежинок при изменении размера окна
             let resizeTimeout;
             window.addEventListener('resize', function() {
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(() => {
-                    createParticleConnections();
+                    // Удаляем лишние снежинки
+                    const targetCount = window.innerWidth < 768 ? 40 : 80;
+                    while (snowflakes.length > targetCount) {
+                        const snowflake = snowflakes.pop();
+                        if (snowflake && snowflake.parentNode) {
+                            snowflake.remove();
+                        }
+                    }
                 }, 250);
             });
             
-            // === ПЕРИОДИЧЕСКОЕ ОБНОВЛЕНИЕ СОЕДИНЕНИЙ ===
-            setInterval(createParticleConnections, 5000);
-            
-            // === УПРАВЛЕНИЕ ВКЛАДКАМИ ===
+            // Управление вкладками
             const navButtons = document.querySelectorAll('.nav-button');
             const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -1672,13 +1167,6 @@
                         });
                     }, 100);
                 }
-                
-                // Анимация появления контента
-                const activePane = document.getElementById(tabId);
-                const cards = activePane.querySelectorAll('.card, .info-item, .principle-item, .project-card, .contact-card');
-                cards.forEach((card, index) => {
-                    card.style.animationDelay = `${index * 0.1}s`;
-                });
             }
 
             navButtons.forEach(button => {
@@ -1688,7 +1176,7 @@
                 });
             });
 
-            // === АНИМАЦИЯ ЗАГОЛОВКА ===
+            // Анимация заголовка
             const titleElement = document.getElementById('typed-title');
             const originalTitle = 'ZLAFIK';
             
@@ -1700,13 +1188,7 @@
                     if (i < originalTitle.length) {
                         titleElement.textContent += originalTitle.charAt(i);
                         i++;
-                        setTimeout(typeChar, 150);
-                    } else {
-                        // Эффект после завершения печати
-                        titleElement.style.textShadow = '0 0 30px rgba(108, 99, 255, 0.5)';
-                        setTimeout(() => {
-                            titleElement.style.textShadow = '0 0 30px rgba(255, 255, 255, 0.1)';
-                        }, 500);
+                        setTimeout(typeChar, 100);
                     }
                 }
                 
@@ -1714,9 +1196,9 @@
             }
 
             // Запуск анимации при загрузке
-            setTimeout(animateTitle, 500);
-            
-            // === КОПИРОВАНИЕ DISCORD ИМЕНИ ===
+            setTimeout(animateTitle, 300);
+
+            // Копирование Discord имени
             window.copyDiscord = function() {
                 const textToCopy = 'zlafik';
                 
@@ -1759,41 +1241,20 @@
                     
                     const originalHTML = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
-                    btn.style.background = 'linear-gradient(135deg, rgba(108, 99, 255, 0.3), rgba(76, 201, 240, 0.3))';
-                    btn.style.borderColor = 'rgba(108, 99, 255, 0.5)';
-                    btn.style.boxShadow = '0 10px 30px rgba(108, 99, 255, 0.4)';
-                    
-                    // Создаём частицу эффекта
-                    const particle = document.createElement('div');
-                    particle.style.position = 'absolute';
-                    particle.style.width = '10px';
-                    particle.style.height = '10px';
-                    particle.style.background = 'rgba(108, 99, 255, 0.8)';
-                    particle.style.borderRadius = '50%';
-                    particle.style.left = '50%';
-                    particle.style.top = '50%';
-                    particle.style.transform = 'translate(-50%, -50%)';
-                    particle.style.pointerEvents = 'none';
-                    particle.style.zIndex = '1000';
-                    particle.style.animation = 'pulseAnimation 0.5s ease-out forwards';
-                    
-                    btn.appendChild(particle);
+                    btn.style.background = 'rgba(255, 255, 255, 0.15)';
+                    btn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
                     
                     setTimeout(() => {
                         btn.innerHTML = originalHTML;
                         btn.style.background = '';
                         btn.style.borderColor = '';
-                        btn.style.boxShadow = '';
-                        if (particle.parentNode) {
-                            particle.parentNode.removeChild(particle);
-                        }
                     }, 2000);
                 }
                 
                 return false;
             };
 
-            // === ПЛАВНЫЙ СКРОЛЛ ===
+            // Плавный скролл для ссылок
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     const targetId = this.getAttribute('href');
@@ -1814,7 +1275,7 @@
                 });
             });
 
-            // === АНИМАЦИЯ КАРТОЧЕК ПРИ СКРОЛЛЕ ===
+            // Анимация карточек при скролле
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -100px 0px'
@@ -1825,44 +1286,11 @@
                     if (entry.isIntersecting) {
                         entry.target.style.opacity = '1';
                         entry.target.style.transform = 'translateY(0)';
-                        
-                        // Добавляем эффект появления
-                        if (!entry.target.classList.contains('animated')) {
-                            entry.target.classList.add('animated');
-                            
-                            // Эффект частиц при появлении
-                            if (entry.target.classList.contains('card') || 
-                                entry.target.classList.contains('project-card') || 
-                                entry.target.classList.contains('contact-card')) {
-                                
-                                for (let i = 0; i < 5; i++) {
-                                    const spark = document.createElement('div');
-                                    spark.style.position = 'absolute';
-                                    spark.style.width = '4px';
-                                    spark.style.height = '4px';
-                                    spark.style.background = 'rgba(108, 99, 255, 0.8)';
-                                    spark.style.borderRadius = '50%';
-                                    spark.style.left = `${Math.random() * 100}%`;
-                                    spark.style.top = `${Math.random() * 100}%`;
-                                    spark.style.pointerEvents = 'none';
-                                    spark.style.zIndex = '1';
-                                    spark.style.animation = `glowParticle 1s ease-out forwards`;
-                                    
-                                    entry.target.appendChild(spark);
-                                    
-                                    setTimeout(() => {
-                                        if (spark.parentNode) {
-                                            spark.parentNode.removeChild(spark);
-                                        }
-                                    }, 1000);
-                                }
-                            }
-                        }
                     }
                 });
             }, observerOptions);
 
-            // Наблюдаем за элементами
+            // Наблюдаем за карточками
             document.querySelectorAll('.card, .contact-card, .project-card, .info-item, .principle-item').forEach(el => {
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(20px)';
@@ -1870,7 +1298,7 @@
                 observer.observe(el);
             });
 
-            // === АДАПТАЦИЯ ДЛЯ TOCH УСТРОЙСТВ ===
+            // Адаптация для touch устройств
             if ('ontouchstart' in window) {
                 document.body.classList.add('touch-device');
                 
@@ -1885,80 +1313,18 @@
                     });
                 });
                 
-                // Меньше частиц для производительности
-                createParticleConnections();
+                // Уменьшаем количество снежинок на touch устройствах
+                snowflakeCount = 30;
             }
 
-            // === ПРЕДОТВРАЩЕНИЕ СКРОЛЛА ПРИ КАСАНИИ НАВИГАЦИИ ===
+            // Предотвращение скролла при касании навигации на мобильных
             const mainNav = document.getElementById('mainNav');
             if (mainNav && 'ontouchstart' in window) {
                 mainNav.addEventListener('touchstart', function(e) {
                     e.stopPropagation();
                 });
             }
-            
-            // === ОБНОВЛЯЕМ ПОДПИСЬ В ФУТЕРЕ ===
-            const footerText = document.querySelector('.footer p:nth-child(2)');
-            if (footerText) {
-                footerText.textContent = 'Чёрно-белый дизайн • Анимации • Снег и частицы';
-            }
-            
-            // === ДОБАВЛЯЕМ ЭФФЕКТ ПРИ НАВЕДЕНИИ НА КНОПКИ ===
-            document.querySelectorAll('.nav-button').forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    // Создаём эффект частиц
-                    for (let i = 0; i < 3; i++) {
-                        const spark = document.createElement('div');
-                        spark.style.position = 'absolute';
-                        spark.style.width = '3px';
-                        spark.style.height = '3px';
-                        spark.style.background = 'rgba(108, 99, 255, 0.8)';
-                        spark.style.borderRadius = '50%';
-                        spark.style.left = `${Math.random() * 100}%`;
-                        spark.style.top = `${Math.random() * 100}%`;
-                        spark.style.pointerEvents = 'none';
-                        spark.style.zIndex = '-1';
-                        spark.style.animation = `floatParticle 1s ease-out forwards`;
-                        
-                        this.appendChild(spark);
-                        
-                        setTimeout(() => {
-                            if (spark.parentNode) {
-                                spark.parentNode.removeChild(spark);
-                            }
-                        }, 1000);
-                    }
-                });
-            });
-            
-            // === ЭФФЕКТ ПРИ ПЕРЕКЛЮЧЕНИИ ВКЛАДОК ===
-            navButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Эффект частиц
-                    for (let i = 0; i < 5; i++) {
-                        const spark = document.createElement('div');
-                        spark.style.position = 'fixed';
-                        spark.style.width = '6px';
-                        spark.style.height = '6px';
-                        spark.style.background = 'rgba(108, 99, 255, 0.9)';
-                        spark.style.borderRadius = '50%';
-                        spark.style.left = `${Math.random() * 100}vw`;
-                        spark.style.top = `${Math.random() * 100}vh`;
-                        spark.style.pointerEvents = 'none';
-                        spark.style.zIndex = '999';
-                        spark.style.animation = `pulseAnimation 0.5s ease-out forwards`;
-                        
-                        document.body.appendChild(spark);
-                        
-                        setTimeout(() => {
-                            if (spark.parentNode) {
-                                spark.parentNode.removeChild(spark);
-                            }
-                        }, 500);
-                    }
-                });
-            });
         });
     </script>
 </body>
-    </html>
+</html>
