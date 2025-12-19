@@ -2,1328 +2,956 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>ZLAFIK | Разработчик</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zlafik | Портфолио</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* === ЧЁРНО-БЕЛАЯ ТЕМА === */
-        :root {
-            --bg-primary: #000000;
-            --bg-secondary: #0a0a0a;
-            --bg-card: #111111;
-            --bg-overlay: rgba(0, 0, 0, 0.9);
-            --text-primary: #ffffff;
-            --text-secondary: #aaaaaa;
-            --text-accent: #dddddd;
-            --border-color: #222222;
-            --border-light: #333333;
-            --border-white: rgba(255, 255, 255, 0.1);
-            --accent-white: rgba(255, 255, 255, 0.9);
-            --accent-light: rgba(255, 255, 255, 0.7);
-            --accent-dim: rgba(255, 255, 255, 0.3);
-            --blur-strength: 20px;
-            --blur-light: 15px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
-
-        html {
-            scroll-behavior: smooth;
+        
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-black: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --medium-gray: #888;
+            --white: #ffffff;
+            --blur-intensity: 10px;
         }
-
+        
+        /* Preloader */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
         body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-black);
+            color: var(--white);
             line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            opacity: 0;
+            animation: fadeInBody 0.5s ease forwards;
+            animation-delay: 0.5s;
         }
-
-        /* === ФОН С ПАДАЮЩИМИ СНЕЖИНКАМИ === */
-        #snow-bg {
+        
+        @keyframes fadeInBody {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Частицы для фона */
+        #particles-js {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -3;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* СНЕЖИНКИ */
-        .snowflake {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(0.5px);
-        }
-
-        /* СВЕТЛЫЕ СНЕЖИНКИ */
-        .snowflake.light {
-            background: rgba(255, 255, 255, 0.7);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
-        }
-
-        /* СРЕДНИЕ СНЕЖИНКИ */
-        .snowflake.medium {
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
-        }
-
-        /* СЛАБЫЕ СНЕЖИНКИ */
-        .snowflake.dim {
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
-        }
-
-        /* АНИМАЦИЯ ПАДЕНИЯ СНЕЖИНОК */
-        @keyframes snowfall {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* БЛЮР ЭФФЕКТ НА ФОНЕ */
-        .blur-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            backdrop-filter: blur(var(--blur-strength));
-            -webkit-backdrop-filter: blur(var(--blur-strength));
-            background: rgba(0, 0, 0, 0.6);
             z-index: -1;
             pointer-events: none;
         }
-
-        /* КОНТЕЙНЕР */
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
+            padding: 0 20px;
         }
-
-        /* НАВИГАЦИЯ С БЛЮРОМ */
-        .top-nav {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
+        
+        /* Header & Navigation */
+        header {
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(var(--blur-intensity));
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(10, 10, 10, 0.85);
+            animation: slideDown 0.8s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .header-content {
             display: flex;
-            gap: 0.5rem;
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid var(--border-white);
-            border-radius: 16px;
-            padding: 0.8rem;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .nav-button {
-            padding: 0.9rem 1.6rem;
-            background: transparent;
-            color: var(--text-secondary);
-            border: none;
-            border-radius: 12px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
+        
+        .logo-area {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            position: relative;
-            overflow: hidden;
+            gap: 20px;
+            animation: fadeInLeft 0.8s ease 0.3s both;
         }
-
-        .nav-button:hover {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+        
+        @keyframes fadeInLeft {
+            from {
+                transform: translateX(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
-
-        .nav-button.active {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-        }
-
-        .nav-button.active::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 2px;
-        }
-
-        /* ЗАГОЛОВОК */
-        .header {
-            padding: 14rem 0 8rem 0;
-            text-align: center;
-            position: relative;
-        }
-
-        .title-container {
-            margin-bottom: 4rem;
-            position: relative;
-        }
-
-        .main-title {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(3.5rem, 10vw, 7rem);
-            font-weight: 800;
-            letter-spacing: -2px;
-            color: transparent;
-            background: linear-gradient(45deg, #ffffff, #cccccc, #888888);
+        
+        .nickname {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, #aaa);
             -webkit-background-clip: text;
             background-clip: text;
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-            line-height: 1;
+            color: transparent;
         }
-
-        .main-title::after {
-            content: '_';
-            position: absolute;
-            right: -30px;
-            color: rgba(255, 255, 255, 0.7);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
+        
         .tagline {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            margin-top: 2rem;
-            padding: 1.2rem 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            background: rgba(20, 20, 20, 0.4);
-            display: inline-block;
-            backdrop-filter: blur(15px);
-            margin-left: auto;
-            margin-right: auto;
-            transform: translateX(30%); /* Сдвигаем правее */
+            font-size: 1rem;
+            color: var(--medium-gray);
+            border-left: 2px solid var(--medium-gray);
+            padding-left: 15px;
+            line-height: 1.4;
+        }
+        
+        nav {
+            animation: fadeInRight 0.8s ease 0.3s both;
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                transform: translateX(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 8px 0;
             position: relative;
+            transition: color 0.3s;
         }
-
-        @media (max-width: 768px) {
-            .tagline {
-                transform: translateX(15%); /* Меньший сдвиг на мобильных */
+        
+        nav a:hover {
+            color: var(--medium-gray);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--white);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        /* Main content */
+        .main-content {
+            padding: 80px 0;
+            animation: fadeInUp 0.8s ease 0.5s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
         }
-
-        @media (max-width: 480px) {
-            .tagline {
-                transform: translateX(10%); /* Ещё меньше на маленьких экранах */
-                font-size: 1rem;
-                padding: 0.8rem 1.5rem;
-            }
-        }
-
-        /* ОСНОВНОЙ КОНТЕНТ */
-        .tab-content {
-            padding: 2rem 0 10rem 0;
-        }
-
-        .tab-pane {
+        
+        .section {
             display: none;
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.5s ease;
         }
-
-        .tab-pane.active {
+        
+        .section.active {
             display: block;
         }
-
+        
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* КАРТОЧКИ С БЛЮРОМ */
-        .card {
-            background: rgba(20, 20, 20, 0.4);
-            border-radius: 24px;
-            padding: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 3rem;
+        
+        /* Home section */
+        .hero {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            font-weight: 800;
+            animation: fadeIn 0.8s ease 0.6s both;
+        }
+        
+        .hero .highlight {
+            color: var(--white);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0 10px;
+            border-radius: 4px;
+        }
+        
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .profile-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(var(--blur-intensity));
+            animation: fadeInUp 0.8s ease var(--delay) both;
         }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
-            pointer-events: none;
-            z-index: 0;
-            border-radius: 24px;
-        }
-
-        .card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-            transform: translateY(-8px);
-            backdrop-filter: blur(30px);
-        }
-
-        .card h2 {
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            margin-bottom: 2.5rem;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            position: relative;
-            padding-bottom: 1rem;
-            z-index: 1;
-        }
-
-        .card h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 120px;
-            height: 3px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
-            border-radius: 3px;
-        }
-
-        /* ИНФО СЕТКА */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-            gap: 1.8rem;
-            margin-top: 2.5rem;
-        }
-
-        .info-item {
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: var(--transition);
-            backdrop-filter: blur(15px);
-        }
-
-        .info-item:hover {
-            border-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-        }
-
-        .label {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* ПРИНЦИПЫ */
-        .principles-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-            gap: 1.8rem;
-            margin-top: 2.5rem;
-        }
-
-        .principle-item {
-            padding: 2.2rem;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: var(--transition);
-            backdrop-filter: blur(15px);
-        }
-
-        .principle-item:hover {
-            border-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-        }
-
-        .principle-item i {
-            font-size: 1.8rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 1.5rem;
-        }
-
-        .principle-text {
+        
+        .profile-card:nth-child(1) { --delay: 0.7s; }
+        .profile-card:nth-child(2) { --delay: 0.8s; }
+        .profile-card:nth-child(3) { --delay: 0.9s; }
+        .profile-card:nth-child(4) { --delay: 1.0s; }
+        .profile-card:nth-child(5) { --delay: 1.1s; }
+        
+        .profile-card h3 {
             font-size: 1.3rem;
-            font-weight: 600;
-            margin: 0 0 0.8rem 0;
-            color: var(--text-primary);
+            margin-bottom: 15px;
+            color: var(--medium-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-
-        .principle-note {
-            color: var(--text-secondary);
-            font-size: 1rem;
+        
+        .profile-card h3 i {
+            font-size: 1.1rem;
+        }
+        
+        .profile-content {
+            font-size: 1.2rem;
             line-height: 1.6;
-            opacity: 0.8;
         }
-
-        /* ВКЛАДКА ПРОЕКТОВ */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 3.5rem;
-            margin-top: 3rem;
+        
+        .age-animation {
+            font-family: monospace;
+            color: #00ff00;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            display: inline-block;
         }
-
-        .project-card {
-            background: rgba(20, 20, 20, 0.4);
-            border-radius: 24px;
-            padding: clamp(3rem, 5vw, 4.5rem);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: var(--transition);
+        
+        .principles-list {
+            list-style: none;
+        }
+        
+        .principles-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
             position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(25px);
+            animation: fadeInLeft 0.8s ease var(--delay) both;
         }
-
-        .project-card::before {
-            content: '';
+        
+        .principles-list li:nth-child(1) { --delay: 1.2s; }
+        .principles-list li:nth-child(2) { --delay: 1.3s; }
+        .principles-list li:nth-child(3) { --delay: 1.4s; }
+        .principles-list li:nth-child(4) { --delay: 1.5s; }
+        
+        .principles-list li:before {
+            content: "•";
             position: absolute;
-            top: 0;
             left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.4), transparent);
-            z-index: 1;
+            color: var(--medium-gray);
         }
-
+        
+        /* Projects section */
+        .projects-header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeIn 0.8s ease both;
+        }
+        
+        .projects-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .projects-header p {
+            color: var(--medium-gray);
+            font-size: 1.2rem;
+        }
+        
+        .project-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(var(--blur-intensity));
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.8s ease both;
+        }
+        
         .project-card:hover {
-            transform: translateY(-10px) scale(1.01);
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 
-                0 30px 70px rgba(0, 0, 0, 0.9),
-                0 0 40px rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(30px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
-
+        
         .project-card h3 {
-            font-size: clamp(2rem, 4vw, 2.5rem);
-            margin-bottom: 2rem;
-            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 1.2rem;
+            gap: 15px;
         }
-
-        .project-description {
-            color: var(--text-secondary);
-            line-height: 1.8;
-            margin-bottom: 3rem;
-            font-size: 1.3rem;
-            opacity: 0.9;
+        
+        .project-card h3 i {
+            color: var(--medium-gray);
         }
-
+        
+        .project-card p {
+            color: var(--medium-gray);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
         .project-tech {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 3rem;
+            gap: 15px;
+            margin-bottom: 30px;
         }
-
-        .tech-tag {
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--text-accent);
-            padding: 0.7rem 1.4rem;
+        
+        .tech-badge {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
             border-radius: 20px;
-            font-size: 0.95rem;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
+            font-size: 0.9rem;
+            color: var(--white);
+            animation: fadeIn 0.8s ease var(--delay) both;
         }
-
-        .tech-tag:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
+        
+        .tech-badge:nth-child(1) { --delay: 0.9s; }
+        .tech-badge:nth-child(2) { --delay: 1.0s; }
+        .tech-badge:nth-child(3) { --delay: 1.1s; }
+        .tech-badge:nth-child(4) { --delay: 1.2s; }
+        .tech-badge:nth-child(5) { --delay: 1.3s; }
+        
         .project-features {
-            margin-bottom: 3.5rem;
+            margin-bottom: 30px;
         }
-
-        .feature-item {
+        
+        .project-features h4 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--medium-gray);
+        }
+        
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            list-style: none;
+        }
+        
+        .features-list li {
+            padding-left: 25px;
+            position: relative;
+            color: var(--medium-gray);
+            animation: fadeInLeft 0.8s ease var(--delay) both;
+        }
+        
+        .features-list li:nth-child(1) { --delay: 1.4s; }
+        .features-list li:nth-child(2) { --delay: 1.5s; }
+        .features-list li:nth-child(3) { --delay: 1.6s; }
+        .features-list li:nth-child(4) { --delay: 1.7s; }
+        
+        .features-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff00;
+        }
+        
+        .project-buttons {
             display: flex;
-            align-items: center;
-            gap: 1.2rem;
-            margin-bottom: 1.2rem;
-            color: var(--text-accent);
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        /* Contact section */
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .contact-header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeIn 0.8s ease both;
+        }
+        
+        .contact-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .contact-header p {
+            color: var(--medium-gray);
             font-size: 1.2rem;
         }
-
-        .feature-item i {
-            color: rgba(255, 255, 255, 0.6);
-            min-width: 24px;
-            font-size: 1rem;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .project-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.2rem;
-            padding: 1.4rem 3rem;
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-            transition: var(--transition);
-            flex: 1;
-            text-align: center;
-            font-size: 1.1rem;
-            backdrop-filter: blur(15px);
-        }
-
-        .project-link:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-4px);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-        }
-
-        /* ВКЛАДКА КОНТАКТОВ */
-        .contacts-grid {
+        
+        .contact-methods {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
         }
-
+        
         .contact-card {
-            background: rgba(20, 20, 20, 0.4);
-            border-radius: 24px;
-            padding: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: var(--transition);
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
             text-align: center;
-            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(var(--blur-intensity));
+            transition: transform 0.3s ease;
+            animation: fadeInUp 0.8s ease var(--delay) both;
         }
-
+        
+        .contact-card:nth-child(1) { --delay: 0.9s; }
+        .contact-card:nth-child(2) { --delay: 1.0s; }
+        .contact-card:nth-child(3) { --delay: 1.1s; }
+        
         .contact-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 255, 255, 0.15);
-            background: rgba(25, 25, 25, 0.5);
-            backdrop-filter: blur(30px);
+            transform: translateY(-10px);
         }
-
+        
         .contact-icon {
-            width: 90px;
-            height: 90px;
-            background: rgba(255, 255, 255, 0.07);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 2rem;
-            font-size: 2.8rem;
-            color: rgba(255, 255, 255, 0.9);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--white);
         }
-
-        .contact-card:hover .contact-icon {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .contact-title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .contact-value {
+        
+        .contact-card h3 {
             font-size: 1.5rem;
-            color: var(--text-accent);
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 2.5rem;
-            word-break: break-all;
-            opacity: 0.9;
+            margin-bottom: 10px;
         }
-
-        .contact-link {
+        
+        .contact-card p {
+            color: var(--medium-gray);
+            margin-bottom: 20px;
+        }
+        
+        /* Buttons */
+        .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            padding: 1.2rem 2.5rem;
-            background: rgba(255, 255, 255, 0.07);
-            color: var(--text-primary);
-            text-decoration: none;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 10px;
+            padding: 15px 30px;
+            border-radius: 50px;
             font-weight: 600;
-            transition: var(--transition);
-            width: 100%;
-            font-size: 1.1rem;
-        }
-
-        .contact-link:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-3px);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        /* ФУТЕР */
-        .footer {
-            text-align: center;
-            padding: 5rem 0;
-            color: var(--text-secondary);
             font-size: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            margin-top: 8rem;
-            backdrop-filter: blur(25px);
-            background: rgba(10, 10, 10, 0.3);
-        }
-
-        .footer p {
-            margin-bottom: 1.2rem;
-            line-height: 1.8;
-            opacity: 0.8;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 3.5rem;
-            margin-top: 2.5rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
             text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
-            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            backdrop-filter: blur(var(--blur-intensity));
         }
-
-        .footer-link:hover {
-            color: var(--text-primary);
+        
+        .btn-primary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
-        /* АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНА */
+        
+        .btn-primary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+            animation: fadeInUp 0.8s ease 1s both;
+        }
+        
+        /* Mobile responsiveness */
         @media (max-width: 768px) {
-            .container {
-                padding: 0 1.5rem;
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
             }
             
-            .header {
-                padding: 10rem 0 6rem 0;
-            }
-            
-            .main-title {
-                font-size: clamp(2.5rem, 8vw, 4rem);
+            .logo-area {
+                flex-direction: column;
+                gap: 10px;
             }
             
             .tagline {
-                font-size: clamp(1rem, 3vw, 1.3rem);
-                padding: 1rem 2rem;
+                border-left: none;
+                padding-left: 0;
+                border-top: 2px solid var(--medium-gray);
+                padding-top: 10px;
             }
             
-            .top-nav {
-                top: 1.5rem;
-                right: 1.5rem;
-                flex-wrap: nowrap;
-                justify-content: center;
-                width: auto;
-            }
-            
-            .nav-button {
-                padding: 0.8rem;
-                min-width: 44px;
-                min-height: 44px;
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
                 justify-content: center;
             }
             
-            .nav-button span {
-                display: none;
+            .hero h1 {
+                font-size: 2.5rem;
             }
             
-            .nav-button i {
-                font-size: 1.3rem;
-                margin: 0;
-            }
-            
-            .card, .project-card, .contact-card {
-                padding: 2rem;
-                margin-bottom: 2rem;
-            }
-            
-            .info-grid, .principles-grid, .contacts-grid {
+            .profile-info {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
             }
             
-            .project-links {
+            .project-card {
+                padding: 25px;
+            }
+            
+            .project-buttons {
                 flex-direction: column;
-                gap: 1.5rem;
             }
             
-            .project-link, .contact-link {
-                padding: 1.3rem 2rem;
+            .btn {
+                width: 100%;
+                justify-content: center;
             }
-            
-            .footer {
-                padding: 3rem 0;
-                margin-top: 5rem;
-            }
-            
-            .footer-links {
-                gap: 2rem;
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            /* Уменьшаем количество снежинок на мобильных */
-            .snowflake {
-                transform: scale(0.8);
-            }
-            
-            /* Уменьшаем блюр на мобильных для производительности */
-            .card, .project-card, .contact-card, .nav-button.active {
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-            }
-            
-            .blur-layer {
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 1rem;
-            }
-            
-            .header {
-                padding: 8rem 0 4rem 0;
-            }
-            
-            .main-title {
-                font-size: 2.8rem;
-            }
-            
-            .tagline {
-                font-size: 1rem;
-                padding: 0.8rem 1.5rem;
-            }
-            
-            .top-nav {
-                top: 1rem;
-                right: 1rem;
-                padding: 0.6rem;
-            }
-            
-            .card h2, .project-card h3 {
-                font-size: 1.6rem;
-            }
-            
-            .value, .contact-value {
-                font-size: 1.3rem;
-            }
-            
-            .principle-text, .project-description, .feature-item {
-                font-size: 1.1rem;
-            }
-            
-            /* Ещё меньше снежинок на очень маленьких экранах */
-            .snowflake {
-                transform: scale(0.7);
-            }
-        }
-
-        /* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ */
-        @media (max-width: 768px) {
-            .card:hover, .project-card:hover, .contact-card:hover {
-                transform: translateY(-5px);
-            }
-            
-            .info-item:hover, .principle-item:hover {
-                transform: translateY(-3px);
-            }
-            
-            /* Убираем сложные тени на мобильных для производительности */
-            .card:hover, .project-card:hover {
-                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
-            }
-        }
-
-        /* ПРЕДОТВРАЩЕНИЕ ЗУМА НА МОБИЛЬНЫХ */
-        input, textarea, button, select, a {
-            font-size: 16px; /* Предотвращает зум в iOS Safari */
         }
     </style>
 </head>
 <body>
-    <!-- ФОН С ПАДАЮЩИМИ СНЕЖИНКАМИ -->
-    <div id="snow-bg"></div>
-    <div class="blur-layer"></div>
-
-    <!-- НАВИГАЦИЯ -->
-    <nav class="top-nav" id="mainNav">
-        <button class="nav-button active" data-tab="home">
-            <i class="fas fa-home"></i>
-            <span>Главная</span>
-        </button>
-        <button class="nav-button" data-tab="projects">
-            <i class="fas fa-code"></i>
-            <span>Проекты</span>
-        </button>
-        <button class="nav-button" data-tab="contact">
-            <i class="fas fa-paper-plane"></i>
-            <span>Связь</span>
-        </button>
-    </nav>
-
-    <div class="container">
-        <!-- ЗАГОЛОВОК -->
-        <header class="header">
-            <div class="title-container">
-                <h1 class="main-title" id="typed-title">ZLAFIK</h1>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Частицы фона -->
+    <div id="particles-js"></div>
+    
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo-area">
+                <h1 class="nickname">zlafik</h1>
                 <div class="tagline">
-                    <i class="fas fa-terminal"></i> Разработчик • Автоматизация • Боты
+                    Кодер<br>Разработчик<br>Боты
                 </div>
             </div>
-        </header>
-
-        <!-- ОСНОВНОЙ КОНТЕНТ -->
-        <main class="tab-content">
-            <!-- ВКЛАДКА: ГЛАВНАЯ -->
-            <section class="tab-pane active" id="home">
-                <!-- ИНФОРМАЦИЯ -->
-                <article class="card">
-                    <h2><i class="fas fa-user-secret"></i> Профиль</h2>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="label"><i class="fas fa-id-badge"></i> ID</div>
-                            <div class="value">zlafik / Рома</div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" data-section="home">Главная</a></li>
+                    <li><a href="#" data-section="projects">Проекты</a></li>
+                    <li><a href="#" data-section="contact">Связь</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="home" class="section active">
+                <div class="hero">
+                    <h1>Привет, я <span class="highlight">zlafik</span></h1>
+                    
+                    <div class="profile-info">
+                        <div class="profile-card">
+                            <h3><i class="fas fa-user"></i> Профиль</h3>
+                            <div class="profile-content">
+                                ID: zlafik / Рома<br>
+                                <span class="age-animation" id="ageCounter">00:00:00:00</span>
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <div class="label"><i class="fas fa-brain"></i> Специализация</div>
-                            <div class="value">Backend • Automation</div>
+                        
+                        <div class="profile-card">
+                            <h3><i class="fas fa-cogs"></i> Специализация</h3>
+                            <div class="profile-content">
+                                Backend • Automation
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <div class="label"><i class="fas fa-calendar-code"></i> Опыт</div>
-                            <div class="value">С 2024</div>
+                        
+                        <div class="profile-card">
+                            <h3><i class="fas fa-calendar-alt"></i> Опыт</h3>
+                            <div class="profile-content">
+                                С 2024
+                            </div>
                         </div>
-                        <div class="info-item">
-                            <div class="label"><i class="fas fa-code-branch"></i> Направление</div>
-                            <div class="value">Discord Bots • API</div>
+                        
+                        <div class="profile-card">
+                            <h3><i class="fas fa-directions"></i> Направление</h3>
+                            <div class="profile-content">
+                                Discord Bots • API
+                            </div>
+                        </div>
+                        
+                        <div class="profile-card">
+                            <h3><i class="fas fa-code"></i> Основной проект</h3>
+                            <div class="profile-content">
+                                Discord Server Cloner V3
+                            </div>
                         </div>
                     </div>
-                </article>
-
-                <!-- ПРИНЦИПЫ -->
-                <article class="card">
-                    <h2><i class="fas fa-dna"></i> Принципы</h2>
-                    <div class="principles-grid">
-                        <div class="principle-item">
-                            <i class="fas fa-bullseye"></i>
-                            <div class="principle-text">Фокус на код</div>
-                            <div class="principle-note">Минимум диалогов, максимум результата</div>
-                        </div>
-                        <div class="principle-item">
-                            <i class="fas fa-ban"></i>
-                            <div class="principle-text">Игнорирование провокаций</div>
-                            <div class="principle-note">Троллинг и конфликты — не мой профиль</div>
-                        </div>
-                        <div class="principle-item">
-                            <i class="fas fa-shield-alt"></i>
-                            <div class="principle-text">Самостоятельность</div>
-                            <div class="principle-note">Работаю исключительно один</div>
-                        </div>
-                        <div class="principle-item">
-                            <i class="fas fa-comment-slash"></i>
-                            <div class="principle-text">ЧС как инструмент</div>
-                            <div class="principle-note">Непрофессионализм = моментальный игнор</div>
-                        </div>
+                    
+                    <div class="profile-card">
+                        <h3><i class="fas fa-gem"></i> Принципы</h3>
+                        <ul class="principles-list">
+                            <li>Фокус на код: Минимум диалогов, максимум результата</li>
+                            <li>Игнорирование провокаций: Троллинг и конфликты — не мой профиль</li>
+                            <li>Самостоятельность: Работаю исключительно один</li>
+                            <li>ЧС как инструмент: Непрофессионализм = моментальный игнор</li>
+                        </ul>
                     </div>
-                </article>
+                </div>
             </section>
-
-            <!-- ВКЛАДКА: ПРОЕКТЫ -->
-            <section class="tab-pane" id="projects">
-                <article class="card">
-                    <h2><i class="fas fa-project-diagram"></i> Основной проект</h2>
-                    <div class="projects-grid">
-                        <div class="project-card">
-                            <h3><i class="fab fa-discord"></i> Discord Server Cloner V3</h3>
-                            <div class="project-description">
-                                Мощный инструмент для полного клонирования Discord серверов. Сохраняет иерархию, порядок ролей и каналов с максимальной точностью. Стабильная работа, обработка ошибок и поддержка всех типов каналов.
-                            </div>
-                            
-                            <div class="project-tech">
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">Discord API</span>
-                                <span class="tech-tag">AsyncIO</span>
-                                <span class="tech-tag">aiohttp</span>
-                                <span class="tech-tag">WebSocket</span>
-                            </div>
-                            
-                            <div class="project-features">
-                                <div class="feature-item">
-                                    <i class="fas fa-check"></i> Полное копирование структуры сервера
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check"></i> Правильный порядок ролей и каналов
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check"></i> Стабильная работа с обработкой ошибок
-                                </div>
-                                <div class="feature-item">
-                                    <i class="fas fa-check"></i> Поддержка всех типов каналов
-                                </div>
-                            </div>
-                            
-                            <div class="project-links">
-                                <a href="https://github.com/zlafik1/discord-server-cloner" class="project-link" target="_blank" rel="noopener">
-                                    <i class="fab fa-github"></i> GitHub
-                                </a>
-                                <a href="https://github.com/zlafik1/discord-server-cloner/releases" class="project-link" target="_blank" rel="noopener">
-                                    <i class="fas fa-download"></i> Скачать
-                                </a>
-                            </div>
-                        </div>
+            
+            <!-- Projects Section -->
+            <section id="projects" class="section">
+                <div class="projects-header">
+                    <h2>Проекты</h2>
+                    <p>Ключевая разработка</p>
+                </div>
+                
+                <div class="project-card">
+                    <h3><i class="fab fa-discord"></i> Discord Server Cloner V3</h3>
+                    <p>Мощный инструмент для полного клонирования Discord серверов. Сохраняет иерархию, порядок ролей и каналов с максимальной точностью. Стабильная работа, обработка ошибок и поддержка всех типов каналов.</p>
+                    
+                    <div class="project-tech">
+                        <span class="tech-badge">Python</span>
+                        <span class="tech-badge">Discord API</span>
+                        <span class="tech-badge">AsyncIO</span>
+                        <span class="tech-badge">aiohttp</span>
+                        <span class="tech-badge">WebSocket</span>
                     </div>
-                </article>
+                    
+                    <div class="project-features">
+                        <h4>Особенности:</h4>
+                        <ul class="features-list">
+                            <li>Полное копирование структуры сервера</li>
+                            <li>Правильный порядок ролей и каналов</li>
+                            <li>Стабильная работа с обработкой ошибок</li>
+                            <li>Поддержка всех типов каналов</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="project-buttons">
+                        <a href="https://github.com/zlafik1/discord-server-cloner" target="_blank" class="btn btn-primary">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://github.com/zlafik1/discord-server-cloner/archive/refs/heads/main.zip" class="btn btn-secondary">
+                            <i class="fas fa-download"></i> Скачать
+                        </a>
+                    </div>
+                </div>
             </section>
-
-            <!-- ВКЛАДКА: КОНТАКТЫ -->
-            <section class="tab-pane" id="contact">
-                <article class="card">
-                    <h2><i class="fas fa-network-wired"></i> Связь со мной</h2>
-                    <div class="contacts-grid">
+            
+            <!-- Contact Section -->
+            <section id="contact" class="section">
+                <div class="contact-container">
+                    <div class="contact-header">
+                        <h2>Свяжитесь со мной</h2>
+                        <p>Выберите удобный способ для связи</p>
+                    </div>
+                    
+                    <div class="contact-methods">
                         <div class="contact-card">
                             <div class="contact-icon">
                                 <i class="fab fa-telegram"></i>
                             </div>
-                            <div class="contact-title">Telegram</div>
-                            <div class="contact-value">@zlafik</div>
-                            <a href="https://t.me/zlafik" class="contact-link" target="_blank" rel="noopener">
-                                <i class="fab fa-telegram"></i> Написать в Telegram
-                            </a>
+                            <h3>Telegram</h3>
+                            <p>Быстрая связь через Telegram</p>
+                            <a href="https://t.me/zlafik" target="_blank" class="btn btn-primary">@zlafik</a>
                         </div>
                         
                         <div class="contact-card">
                             <div class="contact-icon">
                                 <i class="fab fa-discord"></i>
                             </div>
-                            <div class="contact-title">Discord</div>
-                            <div class="contact-value">zlafik</div>
-                            <a href="#" class="contact-link" onclick="copyDiscord()">
-                                <i class="fas fa-copy"></i> Скопировать
-                            </a>
+                            <h3>Discord</h3>
+                            <p>Общение в Discord</p>
+                            <a href="#" class="btn btn-primary">zlafik</a>
                         </div>
                         
                         <div class="contact-card">
                             <div class="contact-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
-                            <div class="contact-title">Email</div>
-                            <div class="contact-value">fendihan7765@gmail.com</div>
-                            <a href="mailto:fendihan7765@gmail.com" class="contact-link">
-                                <i class="fas fa-paper-plane"></i> Написать
-                            </a>
-                        </div>
-                        
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fab fa-github"></i>
-                            </div>
-                            <div class="contact-title">GitHub</div>
-                            <div class="contact-value">github.com/zlafik1</div>
-                            <a href="https://github.com/zlafik1" class="contact-link" target="_blank" rel="noopener">
-                                <i class="fab fa-github"></i> Перейти
-                            </a>
+                            <h3>Email</h3>
+                            <p>Для деловой переписки</p>
+                            <a href="mailto:FendiHan7765@gmail.com" class="btn btn-primary">FendiHan7765@gmail.com</a>
                         </div>
                     </div>
-                </article>
+                </div>
             </section>
-        </main>
-
-        <!-- ФУТЕР -->
-        <footer class="footer">
-            <p>© 2024 <strong>ZLAFIK</strong>. Все права защищены.</p>
-            <p>Чёрно-белый дизайн • Блюр эффекты • Созвездие частиц</p>
-            <div class="footer-links">
-                <a href="#home" class="footer-link">Главная</a>
-                <a href="#projects" class="footer-link">Проекты</a>
-                <a href="#contact" class="footer-link">Контакты</a>
-                <a href="https://github.com/zlafik1/discord-server-cloner" class="footer-link" target="_blank">Discord Cloner</a>
-            </div>
-        </footer>
-    </div>
-
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 zlafik. Все права защищены.</p>
+            <p>Минималистичное черно-белое портфолио</p>
+        </div>
+    </footer>
+    
+    <!-- particles.js library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
     <script>
-        // СОЗДАНИЕ ПАДАЮЩИХ СНЕЖИНОК
+        // Preloader
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 1000);
+        });
+        
+        // Initialize particles.js
         document.addEventListener('DOMContentLoaded', function() {
-            const snowBg = document.getElementById('snow-bg');
-            const snowflakes = [];
-            const snowflakeCount = window.innerWidth < 768 ? 40 : 80; // Меньше снежинок на мобильных
-            
-            // Создаём снежинки
-            function createSnowflake() {
-                const snowflake = document.createElement('div');
-                snowflake.classList.add('snowflake');
-                
-                // Случайный размер
-                const size = Math.random() * 5 + 2;
-                snowflake.style.width = `${size}px`;
-                snowflake.style.height = `${size}px`;
-                
-                // Случайная позиция вверху
-                const x = Math.random() * 100;
-                snowflake.style.left = `${x}%`;
-                snowflake.style.top = `-10px`;
-                
-                // Случайная яркость
-                const brightness = Math.random();
-                if (brightness > 0.7) {
-                    snowflake.classList.add('light');
-                } else if (brightness > 0.4) {
-                    snowflake.classList.add('medium');
-                } else {
-                    snowflake.classList.add('dim');
-                }
-                
-                // Случайная длительность падения
-                const duration = Math.random() * 8 + 10;
-                const delay = Math.random() * 5;
-                const opacity = Math.random() * 0.5 + 0.5;
-                
-                snowflake.style.animation = `snowfall ${duration}s linear ${delay}s infinite`;
-                snowflake.style.opacity = opacity;
-                
-                // Случайное горизонтальное движение
-                const sway = (Math.random() - 0.5) * 50;
-                snowflake.style.setProperty('--sway', `${sway}px`);
-                
-                // Добавляем дополнительную анимацию для горизонтального движения
-                const keyframes = `
-                    @keyframes snowfall-${Date.now()} {
-                        0% {
-                            transform: translateY(-100px) translateX(0) rotate(0deg);
-                            opacity: 0;
+            particlesJS('particles-js', {
+                particles: {
+                    number: {
+                        value: 80,
+                        density: {
+                            enable: true,
+                            value_area: 800
                         }
-                        10% {
-                            opacity: ${opacity};
+                    },
+                    color: {
+                        value: "#ffffff"
+                    },
+                    shape: {
+                        type: "circle"
+                    },
+                    opacity: {
+                        value: 0.1,
+                        random: true,
+                        anim: {
+                            enable: true,
+                            speed: 1,
+                            opacity_min: 0.05,
+                            sync: false
                         }
-                        90% {
-                            opacity: ${opacity};
+                    },
+                    size: {
+                        value: 3,
+                        random: true,
+                        anim: {
+                            enable: true,
+                            speed: 2,
+                            size_min: 0.5,
+                            sync: false
                         }
-                        100% {
-                            transform: translateY(100vh) translateX(var(--sway)) rotate(360deg);
-                            opacity: 0;
+                    },
+                    line_linked: {
+                        enable: true,
+                        distance: 150,
+                        color: "#ffffff",
+                        opacity: 0.1,
+                        width: 1
+                    },
+                    move: {
+                        enable: true,
+                        speed: 1,
+                        direction: "none",
+                        random: true,
+                        straight: false,
+                        out_mode: "out",
+                        bounce: false,
+                        attract: {
+                            enable: false,
+                            rotateX: 600,
+                            rotateY: 1200
                         }
                     }
-                `;
-                
-                const style = document.createElement('style');
-                style.textContent = keyframes;
-                document.head.appendChild(style);
-                
-                snowflake.style.animationName = `snowfall-${Date.now()}`;
-                
-                snowBg.appendChild(snowflake);
-                snowflakes.push(snowflake);
-                
-                // Удаляем снежинку после завершения анимации
-                setTimeout(() => {
-                    if (snowflake.parentNode) {
-                        snowflake.remove();
-                        const index = snowflakes.indexOf(snowflake);
-                        if (index > -1) {
-                            snowflakes.splice(index, 1);
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: {
+                        onhover: {
+                            enable: true,
+                            mode: "repulse"
+                        },
+                        onclick: {
+                            enable: true,
+                            mode: "push"
+                        },
+                        resize: true
+                    },
+                    modes: {
+                        grab: {
+                            distance: 400,
+                            line_linked: {
+                                opacity: 1
+                            }
+                        },
+                        bubble: {
+                            distance: 400,
+                            size: 40,
+                            duration: 2,
+                            opacity: 8,
+                            speed: 3
+                        },
+                        repulse: {
+                            distance: 100,
+                            duration: 0.4
+                        },
+                        push: {
+                            particles_nb: 4
+                        },
+                        remove: {
+                            particles_nb: 2
                         }
                     }
-                }, (duration + delay) * 1000);
-            }
-            
-            // Создаём начальные снежинки
-            for (let i = 0; i < snowflakeCount; i++) {
-                setTimeout(() => createSnowflake(), Math.random() * 2000);
-            }
-            
-            // Продолжаем создавать снежинки
-            setInterval(() => {
-                if (snowflakes.length < snowflakeCount) {
-                    createSnowflake();
-                }
-            }, 300);
-            
-            // Адаптация количества снежинок при изменении размера окна
-            let resizeTimeout;
-            window.addEventListener('resize', function() {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    // Удаляем лишние снежинки
-                    const targetCount = window.innerWidth < 768 ? 40 : 80;
-                    while (snowflakes.length > targetCount) {
-                        const snowflake = snowflakes.pop();
-                        if (snowflake && snowflake.parentNode) {
-                            snowflake.remove();
-                        }
-                    }
-                }, 250);
+                },
+                retina_detect: true
             });
             
-            // Управление вкладками
-            const navButtons = document.querySelectorAll('.nav-button');
-            const tabPanes = document.querySelectorAll('.tab-pane');
-
-            function switchTab(tabId) {
-                navButtons.forEach(btn => btn.classList.remove('active'));
-                tabPanes.forEach(pane => pane.classList.remove('active'));
-                
-                document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
-                document.getElementById(tabId).classList.add('active');
-                
-                // Плавный скролл к началу секции на мобильных
-                if (window.innerWidth < 768) {
-                    setTimeout(() => {
-                        document.getElementById(tabId).scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'start' 
-                        });
-                    }, 100);
-                }
-            }
-
-            navButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-                    switchTab(tabId);
-                });
-            });
-
-            // Анимация заголовка
-            const titleElement = document.getElementById('typed-title');
-            const originalTitle = 'ZLAFIK';
+            // Анимация возраста (случайные цифры)
+            const counter = document.getElementById('ageCounter');
+            let interval;
             
-            function animateTitle() {
-                let i = 0;
-                titleElement.textContent = '';
+            function animateAgeCounter() {
+                let hours = 0, minutes = 0, seconds = 0, milliseconds = 0;
                 
-                function typeChar() {
-                    if (i < originalTitle.length) {
-                        titleElement.textContent += originalTitle.charAt(i);
-                        i++;
-                        setTimeout(typeChar, 100);
-                    }
-                }
-                
-                typeChar();
+                interval = setInterval(() => {
+                    // Генерируем случайные цифры (имитация быстрой смены)
+                    const randomHours = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                    const randomMinutes = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                    const randomSeconds = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+                    const randomMs = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                    
+                    counter.textContent = `${randomHours}:${randomMinutes}:${randomSeconds}:${randomMs}`;
+                }, 50); // Очень быстрая смена
             }
-
-            // Запуск анимации при загрузке
-            setTimeout(animateTitle, 300);
-
-            // Копирование Discord имени
-            window.copyDiscord = function() {
-                const textToCopy = 'zlafik';
+            
+            // Start the age counter animation
+            setTimeout(animateAgeCounter, 1500);
+        });
+        
+        // Навигация между разделами
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(textToCopy)
-                        .then(() => {
-                            showCopySuccess();
-                        })
-                        .catch(err => {
-                            fallbackCopy(textToCopy);
-                        });
-                } else {
-                    fallbackCopy(textToCopy);
-                }
-                
-                function fallbackCopy(text) {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = text;
-                    textArea.style.position = 'fixed';
-                    textArea.style.opacity = '0';
-                    document.body.appendChild(textArea);
-                    textArea.focus();
-                    textArea.select();
-                    
-                    try {
-                        const successful = document.execCommand('copy');
-                        if (successful) {
-                            showCopySuccess();
-                        }
-                    } catch (err) {
-                        alert('Скопируйте вручную: ' + text);
-                    }
-                    
-                    document.body.removeChild(textArea);
-                }
-                
-                function showCopySuccess() {
-                    const btn = event.target.closest('.contact-link');
-                    if (!btn) return;
-                    
-                    const originalHTML = btn.innerHTML;
-                    btn.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
-                    btn.style.background = 'rgba(255, 255, 255, 0.15)';
-                    btn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = originalHTML;
-                        btn.style.background = '';
-                        btn.style.borderColor = '';
-                    }, 2000);
-                }
-                
-                return false;
-            };
-
-            // Плавный скролл для ссылок
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    const targetId = this.getAttribute('href');
-                    if (targetId === '#' || targetId === '#!') return;
-                    
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        e.preventDefault();
-                        
-                        const offset = 20;
-                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
+                // Убираем активный класс у всех ссылок
+                document.querySelectorAll('nav a').forEach(item => {
+                    item.classList.remove('active');
                 });
+                
+                // Добавляем активный класс текущей ссылке
+                this.classList.add('active');
+                
+                // Получаем целевой раздел
+                const targetSection = this.getAttribute('data-section');
+                
+                // Скрываем все разделы
+                document.querySelectorAll('.section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Показываем целевой раздел
+                document.getElementById(targetSection).classList.add('active');
             });
-
-            // Анимация карточек при скролле
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -100px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-
-            // Наблюдаем за карточками
-            document.querySelectorAll('.card, .contact-card, .project-card, .info-item, .principle-item').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
+        });
+        
+        // Эффект при наведении на кнопки
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
             });
-
-            // Адаптация для touch устройств
-            if ('ontouchstart' in window) {
-                document.body.classList.add('touch-device');
-                
-                // Улучшаем отзывчивость на touch
-                document.querySelectorAll('.card, .contact-card, .project-card').forEach(el => {
-                    el.addEventListener('touchstart', function() {
-                        this.style.transition = 'none';
-                    });
-                    
-                    el.addEventListener('touchend', function() {
-                        this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                    });
-                });
-                
-                // Уменьшаем количество снежинок на touch устройствах
-                snowflakeCount = 30;
-            }
-
-            // Предотвращение скролла при касании навигации на мобильных
-            const mainNav = document.getElementById('mainNav');
-            if (mainNav && 'ontouchstart' in window) {
-                mainNav.addEventListener('touchstart', function(e) {
-                    e.stopPropagation();
-                });
-            }
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
         });
     </script>
 </body>
