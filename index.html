@@ -346,6 +346,39 @@
             transform: translateY(0);
         }
         
+        /* НОВАЯ АНИМАЦИЯ ДЛЯ СМЕНЫ СЕКЦИЙ */
+        .section.entering {
+            display: block;
+            animation: sectionEnter 0.6s ease forwards;
+        }
+        
+        .section.leaving {
+            animation: sectionLeave 0.6s ease forwards;
+        }
+        
+        @keyframes sectionEnter {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes sectionLeave {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px);
+                display: none;
+            }
+        }
+        
         .section-header {
             text-align: center;
             margin-bottom: 60px;
@@ -548,7 +581,7 @@
             border-color: var(--white);
         }
         
-        /* СЕКЦИЯ ТЕХНОЛОГИЙ - КРАСИВО ПО ЦЕНТРУ */
+        /* СЕКЦИЯ ТЕХНОЛОГИЙ - УБРАН ДУБЛИРУЮЩИЙСЯ ЗАГОЛОВОК */
         .technologies-section {
             text-align: center;
             margin: 100px 0;
@@ -1279,7 +1312,7 @@
                             </div>
                         </div>
                         
-                        <!-- КРАСИВАЯ СЕКЦИЯ ТЕХНОЛОГИЙ ПО ЦЕНТРУ -->
+                        <!-- КРАСИВАЯ СЕКЦИЯ ТЕХНОЛОГИЙ ПО ЦЕНТРУ (ЗАГОЛОВОК БЫЛ УБРАН Т.К. ДУБЛИРОВАЛСЯ) -->
                         <div class="technologies-section">
                             <h2 class="section-title-main">ТЕХНОЛОГИИ</h2>
                             
@@ -1627,23 +1660,61 @@
             easing: 'ease-out'
         });
         
-        // Навигация
+        // Навигация с улучшенной анимацией
         const sections = document.querySelectorAll('.section');
         const navLinks = document.querySelectorAll('.nav-links a, .mobile-menu a, .footer-links a');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
         
+        let isAnimating = false; // Флаг для предотвращения множественных анимаций
+        
         function showSection(sectionId) {
-            sections.forEach(section => {
-                section.classList.remove('active');
-                if (section.id === sectionId) {
-                    setTimeout(() => {
-                        section.classList.add('active');
-                    }, 50);
-                }
-            });
+            if (isAnimating) return; // Если уже идет анимация, выходим
+            isAnimating = true;
             
+            const currentSection = document.querySelector('.section.active');
+            const newSection = document.getElementById(sectionId);
+            
+            // Если секция уже активна, ничего не делаем
+            if (currentSection === newSection) {
+                isAnimating = false;
+                return;
+            }
+            
+            // Анимация ухода текущей секции
+            if (currentSection) {
+                currentSection.classList.remove('active');
+                currentSection.classList.add('leaving');
+                
+                setTimeout(() => {
+                    currentSection.classList.remove('leaving');
+                    currentSection.style.display = 'none';
+                    
+                    // Анимация входа новой секции
+                    newSection.style.display = 'block';
+                    newSection.classList.add('entering');
+                    
+                    setTimeout(() => {
+                        newSection.classList.remove('entering');
+                        newSection.classList.add('active');
+                        isAnimating = false;
+                        
+                        // Прокрутка к началу секции
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        
+                        // Перезапуск AOS для новой секции
+                        AOS.refresh();
+                    }, 50);
+                }, 600);
+            } else {
+                // Если нет активной секции (начальная загрузка)
+                newSection.style.display = 'block';
+                newSection.classList.add('active');
+                isAnimating = false;
+            }
+            
+            // Обновление активных ссылок в навигации
             navLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('data-section') === sectionId) {
@@ -1651,6 +1722,7 @@
                 }
             });
             
+            // Закрытие мобильного меню
             mobileMenu.classList.remove('active');
             mobileMenuOverlay.classList.remove('active');
         }
